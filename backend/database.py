@@ -6,6 +6,10 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 # In production, this will be overridden by environment variables
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@db:5432/inventory_db")
 
+# Render injects 'postgres://' instead of 'postgresql://', which SQLAlchemy 1.4+ rejects
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
